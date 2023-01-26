@@ -4,6 +4,7 @@ import LoginPage from "../components/Pages/LoginPage";
 import RegisterPage from "../components/Pages/RegisterPage";
 import ProfilePage from "../components/Pages/ProfilePage";
 import VerificationEmailPage from "../components/Pages/VerificationEmailPage";
+import AllFilesPage from "../components/Pages/AllFilesPage";
 import HomePage from "../components/Pages/HomePage";
 
 const routes = [
@@ -16,6 +17,7 @@ const routes = [
     name: "VerificationEmailPage",
     component: VerificationEmailPage,
   },
+  { path: "/all-files", name: "AllFilesPage", component: AllFilesPage },
 ];
 
 const router = createRouter({
