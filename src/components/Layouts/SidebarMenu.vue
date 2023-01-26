@@ -2,7 +2,7 @@
 	<nav class="sidebar-menu">
 		<ul class="list-group flex-column d-inline-block first-menu scroll-bar">
 			<li class="list-group-item main-grid">
-				<router-link to="" class="icon">
+				<router-link to="/" class="icon">
 					<img src="../../assets/images/icon/element.svg" alt="element">
 				</router-link>
 			</li>
@@ -18,38 +18,10 @@
 					<img src="../../assets/images/icon/messages.svg" alt="messages">
 				</router-link>
 			</li>
-
 			<li class="list-group-item main-grid">
-				<router-link to="/my-devices" class="icon">
+				<router-link to="/all-files" class="icon">
 					<img src="../../assets/images/icon/document-copy.svg" alt="document-copy">
 				</router-link>
-
-				<ul class="list-group flex-column d-inline-block submenu">
-					<li class="list-group-item">
-						<router-link to="/my-devices">My Devices</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/recent">Recent</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/important">Important</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/deleted-files">Deleted Files</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/documents">Documents</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/images">Images</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/videos">Videos</router-link>
-					</li>
-					<li class="list-group-item">
-						<router-link to="/audio">Audio</router-link>
-					</li>
-				</ul>
 			</li>
 
 			<li class="list-group-item main-grid">

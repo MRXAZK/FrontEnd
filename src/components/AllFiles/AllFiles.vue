@@ -119,28 +119,24 @@
                                             <img src="../../assets/images/icon/dots.svg" alt="dots">
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                                <i class='bx bx-save'></i> Save File
+                                            <a class="dropdown-item d-flex align-items-center" onclick="sendData(file)">
+                                                <i class='bx bx-download'></i> Download File
                                             </a>
                                             <a class="dropdown-item d-flex align-items-center" href="#">
                                                 <i class='bx bx-trash'></i> Delete File
                                             </a>
-                                            <a class="dropdown-item d-flex align-items-center" href="#">
-                                                <i class='bx bx-hdd'></i> Save To Drive
-                                            </a>
                                         </div>
                                     </div>
                                     <div class="text-center file">
-                                        <img v-if="file.endsWith('.docx')" src="../../assets/images/file/doc.svg"
+                                        <img v-if="file.name.endsWith('.docx')" src="../../assets/images/file/doc.svg"
                                             alt="file">
-                                        <img v-if="file.endsWith('.pdf')" src="../../assets/images/file/pdf.svg"
+                                        <img v-if="file.name.endsWith('.pdf')" src="../../assets/images/file/pdf.svg"
                                             alt="file">
-                                        <img v-if="file.endsWith('.xsls')" src="../../assets/images/file/excel.svg"
+                                        <img v-if="file.name.endsWith('.xsls')" src="../../assets/images/file/excel.svg"
                                             alt="file">
                                     </div>
-                                    <h6>{{ file }}</h6>
-                                    <span>05 Files</span>
-                                    <span class="mb">2.5 MB</span>
+                                    <h6>{{ file.name }}</h6>
+                                    <span class="mb"> {{ file.size }} </span>
                                 </div>
                             </div>
                         </div>
@@ -174,8 +170,28 @@ export default {
                 .catch(error => {
                     console.log(error)
                 })
+        },
+        onClick() {
+
         }
+    },
+    sendData(data) {
+        axios({
+            url: 'https://api.farhanaulianda.tech/api/ocr/download_file/' + data,
+            method: 'GET',
+            responseType: 'blob',
+        }).then((response) => {
+            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+            var fileLink = document.createElement('a');
+
+            fileLink.href = fileURL;
+            fileLink.setAttribute('download', 'file.pdf');
+            document.body.appendChild(fileLink);
+
+            fileLink.click();
+        });
     }
+
 }
 </script>
 
