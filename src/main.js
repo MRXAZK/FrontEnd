@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import { createPinia } from "pinia";
 import router from "./router";
 import BootstrapVue3 from "bootstrap-vue-3";
 import VueApexCharts from "vue3-apexcharts";
@@ -11,5 +12,6 @@ import "./assets/custom.scss";
 
 const app = createApp(App).use(router);
 app.use(VueApexCharts);
+app.use(createPinia());
 app.use(BootstrapVue3);
 app.mount("#app");

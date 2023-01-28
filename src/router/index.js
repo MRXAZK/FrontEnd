@@ -6,6 +6,7 @@ import ProfilePage from "../components/Pages/ProfilePage";
 import VerificationEmailPage from "../components/Pages/VerificationEmailPage";
 import AllFilesPage from "../components/Pages/AllFilesPage";
 import HomePage from "../components/Pages/HomePage";
+import { useAuthStore } from "@/stores";
 
 const routes = [
   { path: "/", name: "HomePage", component: HomePage },
@@ -27,6 +28,18 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0, behavior: "smooth" };
   },
+});
+
+router.beforeEach(async (to) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+  const auth = useAuthStore();
+
+  if (authRequired && !auth.user) {
+    auth.returnUrl = to.fullPath;
+    return "/login";
+  }
 });
 
 export default router;

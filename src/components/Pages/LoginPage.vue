@@ -1,3 +1,4 @@
+<!-- components/pages/LoginPage.vue -->
 <template>
     <div class="account-area">
         <div class="d-table">
@@ -11,29 +12,38 @@
                             <h3>Login</h3>
                         </div>
 
-                        <form @submit.prevent="handleSubmit" class="account-wrap">
-                            <div v-if="errorMessage" class="error-message">
-                                {{ errorMessage }}
+                        <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }"
+                            class="account-wrap">
+                            <div v-if="errors.apiError" class="error-message">
+                                {{ errors.apiError }}
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="email" v-model="email" class="form-control" placeholder="Email">
+                                <Field name="email" v-model="email" placeholder="Email" type="email"
+                                    class="form-control" :class="{ 'is-invalid': errors.email }" />
                                 <img src="../../assets/images/icon/sms.svg" alt="sms">
+                                <div class="invalid-feedback">{{ errors.email }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="password" v-model="password" class="form-control" placeholder="Password">
+                                <Field name="password" v-model="password" placeholder="Password" type="text"
+                                    class="form-control" :class="{ 'is-invalid': errors.password }" />
                                 <img src="../../assets/images/icon/key.svg" alt="key">
+                                <div class="invalid-feedback">{{ errors.password }}</div>
                             </div>
+                            <div class="invalid-feedback">{{ errors.password }}</div>
                             <div class="form-group mb-24">
                                 <router-link to="/forget-password" class="forgot">Forgot Password?</router-link>
                             </div>
                             <div class="form-group mb-24">
-                                <button type="submit" class="default-btn">Log In</button>
+                                <button type="submit" class="default-btn" :disabled="isSubmitting"><span
+                                        v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                                    Login
+                                </button>
                             </div>
                             <div class="form-group mb-24 text-center">
                                 <p class="account">Not A Member? <router-link to="/register">Create An
                                         Account</router-link></p>
                             </div>
-                        </form>
+                        </Form>
 
                         <ul class="account-social-link">
                             <li>
@@ -59,43 +69,24 @@
     </div>
 </template>
 
-<script>
-import axios from 'axios';
-import Cookies from 'js-cookie';
-export default {
-    name: 'LoginPage',
-    data() {
-        return {
-            email: '',
-            password: '',
-            errorMessage: ''
-        }
-    },
-    methods: {
-        async handleSubmit() {
-            try {
-                const response = await axios.post('api/auth/login', {
-                    email: this.email,
-                    password: this.password,
-                });
-                // Set the access_token and refresh_token cookies
-                Cookies.set('access_token', response.data.access_token);
-                Cookies.set('refresh_token', response.data.refresh_token);
+<script setup>
+import { Form, Field } from 'vee-validate';
+import * as Yup from 'yup';
 
-                if (response.data.access_token) {
-                    Cookies.set('logged_in', true);
-                    this.$router.push('/');
-                }
-            } catch (error) {
-                if (error.response) {
-                    this.errorMessage = error.response.data.detail;
-                }
-            }
-        }
-    },
-    mounted() {
-        document.body.classList.add('body-bg-f8faff')
-    },
+import { useAuthStore } from '@/stores';
+
+const schema = Yup.object().shape({
+    email: Yup.string().required('Email is required'),
+    password: Yup.string().required('Password is required')
+});
+
+function onSubmit(values, { setErrors }) {
+    const authStore = useAuthStore();
+    const { email, password } = values;
+
+    return authStore.login(email, password)
+        .catch(error => setErrors({ apiError: error.response.data.detail }));
+
 }
 </script>
 
