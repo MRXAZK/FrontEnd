@@ -10,36 +10,37 @@
                             </router-link>
                             <h3>Registration</h3>
                         </div>
-
-                        <form @submit.prevent="handleSubmit" class="account-wrap">
-                            <div v-if="errorMessage" class="error-message">
-                                {{ errorMessage }}
+                        <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }"
+                            class="account-wrap">
+                            <div v-if="errors.apiError" class="error-message">
+                                {{ errors.apiError }}
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="text" class="form-control" v-model="username" placeholder="Username">
-                                <img src="../../assets/images/icon/user-square.svg" alt="user-square">
+                                <Field name="username" v-model="username" placeholder="Username" type="text"
+                                    class="form-control" :class="{ 'is-invalid': errors.username }" />
+                                <img src="../../assets/images/icon/user-square.svg" alt="sms">
+                                <div class="invalid-feedback">{{ errors.username }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="text" class="form-control" v-model="full_name" placeholder="Full Name">
-                                <img src="../../assets/images/icon/user-square.svg" alt="user-square">
-                            </div>
-                            <div class="form-group mb-24 icon">
-                                <input type="email" class="form-control" v-model="email" placeholder="Email">
+                                <Field name="email" v-model="email" placeholder="Email" type="email"
+                                    class="form-control" :class="{ 'is-invalid': errors.email }" />
                                 <img src="../../assets/images/icon/sms.svg" alt="sms">
+                                <div class="invalid-feedback">{{ errors.email }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="text" class="form-control" v-model="photo" placeholder="Photo">
-                                <img src="../../assets/images/icon/user-square.svg" alt="user-square">
-                            </div>
-                            <div class="form-group mb-24 icon">
-                                <input type="password" class="form-control" v-model="password" placeholder="Password">
+                                <Field name="password" v-model="password" placeholder="Password" type="password"
+                                    class="form-control" :class="{ 'is-invalid': errors.password }" />
                                 <img src="../../assets/images/icon/key.svg" alt="key">
+                                <div class="invalid-feedback">{{ errors.password }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
-                                <input type="password" class="form-control" v-model="passwordConfirm"
-                                    placeholder="Confirm Password">
+                                <Field name="passwordConfirm" v-model="passwordConfirm" placeholder="Confirm Password"
+                                    type="password" class="form-control"
+                                    :class="{ 'is-invalid': errors.passwordConfirm }" />
                                 <img src="../../assets/images/icon/key.svg" alt="key">
+                                <div class="invalid-feedback">{{ errors.passwordConfirm }}</div>
                             </div>
+                            <div class="invalid-feedback">{{ errors.passwordConfirm }}</div>
                             <div class="form-group mb-24">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -49,13 +50,16 @@
                                 </div>
                             </div>
                             <div class="form-group mb-24">
-                                <button type="submit" class="default-btn">Registration</button>
+                                <button type="submit" class="default-btn" :disabled="isSubmitting"><span
+                                        v-show="isSubmitting" class="spinner-border spinner-border-sm mr-1"></span>
+                                    Registration
+                                </button>
                             </div>
-                            <div class="form-group mb-24">
+                            <div class="form-group mb-24 text-center">
                                 <p class="account">Already Have An Account? <router-link to="/login">Log
                                         In</router-link></p>
                             </div>
-                        </form>
+                        </Form>
 
                         <ul class="account-social-link">
                             <li>
@@ -81,42 +85,32 @@
     </div>
 </template>
 
-<script>
-import axios from 'axios'
-export default {
-    name: 'RegisterPage',
-    data() {
-        return {
-            username: '',
-            full_name: '',
-            email: '',
-            photo: '',
-            password: '',
-            passwordConfirm: '',
-            errorMessage: ''
-        }
-    },
-    methods: {
-        async handleSubmit() {
-            try {
-                const response = await axios.post('api/auth/register', {
-                    username: this.username,
-                    full_name: this.full_name,
-                    email: this.email,
-                    photo: this.photo,
-                    password: this.password,
-                    passwordConfirm: this.passwordConfirm
-                }
-                );
-                this.$router.push('/verification');
-                console.log(response);
-            } catch (error) {
-                if (error.response) {
-                    this.errorMessage = error.response.data.detail;
-                }
-            }
-        }
-    },
+<script setup>
+import { Form, Field } from 'vee-validate';
+import * as Yup from 'yup';
+
+import { useAuthStore } from '@/stores';
+
+const schema = Yup.object().shape({
+    username: Yup.string().required('Username is required'),
+    email: Yup.string().required('Email is required'),
+    password: Yup.string().required('Password is required'),
+    passwordConfirm: Yup.string().required('Password Confirm is required')
+
+});
+
+function onSubmit(values, { setErrors }) {
+    const authStore = useAuthStore();
+    const { username,
+        email,
+        password,
+        passwordConfirm } = values;
+
+    return authStore.register(username,
+        email,
+        password,
+        passwordConfirm)
+        .catch(error => setErrors({ apiError: error.response.data.detail }));
 
 }
 </script>

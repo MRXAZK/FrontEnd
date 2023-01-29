@@ -17,6 +17,16 @@ export const useAuthStore = defineStore({
     returnUrl: null,
   }),
   actions: {
+    async register(username, email, password, passwordConfirm) {
+      await axios.post("api/auth/register", {
+        username,
+        email,
+        password,
+        passwordConfirm,
+      });
+      router.push("/verification");
+    },
+
     async login(email, password) {
       const user = await axios.post("api/auth/login", {
         email,
