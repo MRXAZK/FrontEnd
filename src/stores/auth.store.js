@@ -38,8 +38,8 @@ export const useAuthStore = defineStore({
           path: "/",
           sameSite: "lax",
         });
-        router.push("/");
       }
+      router.push(this.returnUrl || "/");
     },
     logout() {
       this.user = null;
