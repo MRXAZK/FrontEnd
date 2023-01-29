@@ -24,7 +24,7 @@
                                 <div class="invalid-feedback">{{ errors.email }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
-                                <Field name="password" v-model="password" placeholder="Password" type="text"
+                                <Field name="password" v-model="password" placeholder="Password" type="password"
                                     class="form-control" :class="{ 'is-invalid': errors.password }" />
                                 <img src="../../assets/images/icon/key.svg" alt="key">
                                 <div class="invalid-feedback">{{ errors.password }}</div>

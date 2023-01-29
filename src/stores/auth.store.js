@@ -32,15 +32,14 @@ export const useAuthStore = defineStore({
         path: "/",
         sameSite: "lax",
       });
-
       if (user.data.access_token) {
         Cookies.set("logged_in", true, {
           expires: 15,
           path: "/",
           sameSite: "lax",
         });
+        router.push("/");
       }
-      router.push(this.returnUrl || "/");
     },
     logout() {
       this.user = null;
