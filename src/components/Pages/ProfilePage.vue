@@ -12,8 +12,8 @@
 
 <script>
 import MainHeader from '../Layouts/MainHeader'
-import PageTitle from '../Common/PageTitle'
-import ProfileContent from '../Profile/ProfileContent'
+import PageTitle from '../Pages/PageTitle'
+import ProfileContent from '../Pages/ProfileContent'
 import FooterArea from '../Layouts/FooterArea'
 
 const ProfilePage = () => {

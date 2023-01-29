@@ -12,8 +12,8 @@
 
 <script>
 import MainHeader from '../Layouts/MainHeader'
-import PageTitle from '../Common/PageTitle'
-import AllFiles from '../AllFiles/AllFiles'
+import PageTitle from '../Pages/PageTitle'
+import AllFiles from '../Pages/AllFiles'
 import FooterArea from '../Layouts/FooterArea'
 
 export default {
