@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import Cookies from "js-cookie";
 import router from "../router";
+import { useUsersStore } from "./users.store";
 
 const ACCESS_TOKEN_EXPIRES_IN = 15;
 const REFRESH_TOKEN_EXPIRES_IN = 60;
@@ -56,6 +57,7 @@ export const useAuthStore = defineStore({
         this.refresh_token = user.data.refresh_token;
         this.logged_in = true;
         this.returnUrl = "/";
+        useUsersStore().afterLogin();
         router.push(this.returnUrl);
       }
     },
