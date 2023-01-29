@@ -310,9 +310,9 @@
 								<a class="dropdown-item dropdown-toggle avatar d-flex align-items-center" href="#"
 									id="navbarDropdown-4" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									<img src="../../assets/images/avatar.png" alt="avatar">
-									<div class="d-none d-lg-block d-md-block" v-if="profile">
-										<h3>{{ profile.full_name }}</h3>
-										<span>@{{ profile.username }}</span>
+									<div class="d-none d-lg-block d-md-block">
+										<h3>{{ users.username }}</h3>
+										<span>@{{ users.email }}</span>
 									</div>
 								</a>
 
@@ -324,9 +324,9 @@
 										</div>
 
 										<div class="info text-center">
-											<span class="name">{{ profile.full_name }}</span>
+											<span class="name">{{ users.username }}</span>
 											<p class="mb-3 email">
-												<a href="mailto:johnsmilga@hello.com">@{{ profile.username }}</a>
+												<a href="mailto:johnsmilga@hello.com">@{{ users.email }}</a>
 											</p>
 										</div>
 									</div>
@@ -391,11 +391,19 @@
 		<SidebarMenu class="style-two" :class="{ active_sidemenu_area: sidemenu }" />
 	</div>
 </template>
+<script setup>
+import { storeToRefs } from 'pinia';
+
+import { useUsersStore } from '@/stores';
+
+const usersStore = useUsersStore();
+const { users } = storeToRefs(usersStore);
+
+usersStore.getAll();
+</script>
 
 <script>
-import axios from 'axios'
 import SidebarMenu from './SidebarMenu'
-import Cookies from 'js-cookie'
 
 export default {
 	name: 'MainHeader',
@@ -410,15 +418,6 @@ export default {
 		sidemenu: false,
 		button_sidemenu_state: false
 	}),
-	async created() {
-		const response = await axios.get('api/users/me', {
-			headers: {
-				'Authorization': 'Bearer ' + Cookies.get('access_token')
-			}
-		});
-		console.log(response.data);
-		this.profile = response.data;
-	},
 	mounted() {
 		const that = this;
 		window.addEventListener("scroll", () => {

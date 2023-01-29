@@ -22,13 +22,25 @@ export const useAuthStore = defineStore({
 
       this.user = user;
       // Set the access_token and refresh_token cookies
-      Cookies.set("access_token", user.data.access_token);
-      Cookies.set("refresh_token", user.data.refresh_token);
+      Cookies.set("access_token", user.data.access_token, {
+        expires: 15,
+        path: "/",
+        sameSite: "lax",
+      });
+      Cookies.set("refresh_token", user.data.refresh_token, {
+        expires: 15,
+        path: "/",
+        sameSite: "lax",
+      });
 
       if (user.data.access_token) {
-        Cookies.set("logged_in", true);
-        router.push(this.returnUrl || "/");
+        Cookies.set("logged_in", true, {
+          expires: 15,
+          path: "/",
+          sameSite: "lax",
+        });
       }
+      router.push(this.returnUrl || "/");
     },
     logout() {
       this.user = null;
