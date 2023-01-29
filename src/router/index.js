@@ -1,5 +1,5 @@
+// router/index.js
 import { createWebHistory, createRouter } from "vue-router";
-
 import LoginPage from "../components/Pages/LoginPage";
 import RegisterPage from "../components/Pages/RegisterPage";
 import ProfilePage from "../components/Pages/ProfilePage";
@@ -21,7 +21,7 @@ const routes = [
   { path: "/all-files", name: "AllFilesPage", component: AllFilesPage },
 ];
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
   linkExactActiveClass: "active",
   routes,
@@ -31,14 +31,19 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ["/login"];
   const authRequired = !publicPages.includes(to.path);
   const auth = useAuthStore();
 
+  // redirect to login page if not logged in and trying to access a restricted page
   if (authRequired && !auth.access_token && !auth.refresh_token) {
     auth.returnUrl = to.fullPath;
     return "/login";
+  }
+
+  // redirect to home page if user is already logged in and trying to access the login page
+  if (to.path === "/login" && auth.access_token) {
+    return "/";
   }
 });
 

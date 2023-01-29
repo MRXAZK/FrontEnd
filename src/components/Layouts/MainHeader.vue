@@ -366,7 +366,7 @@
 									<div class="dropdown-footer">
 										<ul class="profile-nav">
 											<li class="nav-item">
-												<router-link to="/login" class="nav-link">
+												<router-link to="/login" @click="authStore.logout()" class="nav-link">
 													<i class="ri-login-circle-line"></i>
 													<span>Logout</span>
 												</router-link>
@@ -393,11 +393,14 @@
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
-
-import { useUsersStore } from '@/stores';
+import { useAuthStore, useUsersStore } from '@/stores';
 
 const usersStore = useUsersStore();
+const authStore = useAuthStore();
+
 const { users } = storeToRefs(usersStore);
+
+
 
 usersStore.getAll();
 </script>

@@ -4,6 +4,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import router from "../router";
 
+const ACCESS_TOKEN_EXPIRES_IN = 15;
+const REFRESH_TOKEN_EXPIRES_IN = 60;
+
 export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
@@ -23,30 +26,39 @@ export const useAuthStore = defineStore({
       this.user = user;
       // Set the access_token and refresh_token cookies
       Cookies.set("access_token", user.data.access_token, {
-        expires: 15,
+        expires: ACCESS_TOKEN_EXPIRES_IN / 60,
         path: "/",
         sameSite: "lax",
       });
       Cookies.set("refresh_token", user.data.refresh_token, {
-        expires: 15,
+        expires: REFRESH_TOKEN_EXPIRES_IN / 60,
         path: "/",
         sameSite: "lax",
       });
       if (user.data.access_token) {
         Cookies.set("logged_in", true, {
-          expires: 15,
+          expires: ACCESS_TOKEN_EXPIRES_IN / 60,
           path: "/",
           sameSite: "lax",
         });
+
+        this.access_token = user.data.access_token;
+        this.refresh_token = user.data.refresh_token;
+        this.logged_in = true;
+        this.returnUrl = "/";
+        router.push(this.returnUrl);
       }
-      router.push(this.returnUrl || "/");
     },
     logout() {
-      this.user = null;
-      Cookies.remove("access_token");
-      Cookies.remove("refresh_token");
-      Cookies.remove("logged_in");
-      router.push("/login");
+      if (this.access_token && this.refresh_token) {
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        Cookies.remove("logged_in");
+        this.access_token = null;
+        this.refresh_token = null;
+        this.logged_in = null;
+        this.returnUrl = null;
+      }
     },
   },
 });
