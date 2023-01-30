@@ -402,7 +402,7 @@ const { users } = storeToRefs(usersStore);
 
 
 
-usersStore.afterLogin();
+usersStore.getAll();
 </script>
 
 <script>
