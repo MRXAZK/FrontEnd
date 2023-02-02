@@ -45,6 +45,9 @@ router.beforeEach(async (to, from, next) => {
   if (to.path === "/login" && auth.access_token) {
     return next("/");
   }
+  if (to.path === "/register" && auth.access_token) {
+    return next("/");
+  }
   if (to.path === "/verification" && from.path !== "/register") {
     return next("/");
   }

@@ -311,8 +311,8 @@
 									id="navbarDropdown-4" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									<img src="../../assets/images/avatar.png" alt="avatar">
 									<div class="d-none d-lg-block d-md-block">
-										<h3>{{ users.username }}</h3>
-										<span>@{{ users.email }}</span>
+										<h3>{{ users.full_name }}</h3>
+										<span>@{{ users.username }}</span>
 									</div>
 								</a>
 
@@ -324,9 +324,9 @@
 										</div>
 
 										<div class="info text-center">
-											<span class="name">{{ users.username }}</span>
+											<span class="name">{{ users.full_name }}</span>
 											<p class="mb-3 email">
-												<a href="mailto:johnsmilga@hello.com">@{{ users.email }}</a>
+												<a href="mailto:johnsmilga@hello.com">@{{ users.username }}</a>
 											</p>
 										</div>
 									</div>

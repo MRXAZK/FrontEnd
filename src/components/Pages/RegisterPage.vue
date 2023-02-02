@@ -22,6 +22,12 @@
                                 <div class="invalid-feedback">{{ errors.username }}</div>
                             </div>
                             <div class="form-group mb-24 icon">
+                                <Field name="full_name" v-model="full_name" placeholder="Full Name" type="text"
+                                    class="form-control" :class="{ 'is-invalid': errors.full_name }" />
+                                <img src="../../assets/images/icon/user-square.svg" alt="sms">
+                                <div class="invalid-feedback">{{ errors.full_name }}</div>
+                            </div>
+                            <div class="form-group mb-24 icon">
                                 <Field name="email" v-model="email" placeholder="Email" type="email"
                                     class="form-control" :class="{ 'is-invalid': errors.email }" />
                                 <img src="../../assets/images/icon/sms.svg" alt="sms">
@@ -93,6 +99,7 @@ import { useAuthStore } from '@/stores';
 
 const schema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
+    full_name: Yup.string().required('Name is required'),
     email: Yup.string().required('Email is required'),
     password: Yup.string().required('Password is required'),
     passwordConfirm: Yup.string().required('Password Confirm is required')
@@ -102,11 +109,13 @@ const schema = Yup.object().shape({
 function onSubmit(values, { setErrors }) {
     const authStore = useAuthStore();
     const { username,
+        full_name,
         email,
         password,
         passwordConfirm } = values;
 
     return authStore.register(username,
+        full_name,
         email,
         password,
         passwordConfirm)
