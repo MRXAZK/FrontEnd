@@ -111,7 +111,7 @@
                         <h3>Browse Files</h3>
 
                         <div class="row">
-                            <div class="col-xxl-3 col-sm-6" v-for="file in fileList" :key="file">
+                            <div class="col-xxl-3 col-sm-6" v-for="file in files" :key="file">
                                 <div class="single-folder">
                                     <div class="dropdown text-end">
                                         <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -119,7 +119,8 @@
                                             <img src="../../assets/images/icon/dots.svg" alt="dots">
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item d-flex align-items-center" onclick="sendData(file)">
+                                            <a class="dropdown-item d-flex align-items-center"
+                                                href="https://api.farhanaulianda.tech/api/file/download/{{file.id}">
                                                 <i class='bx bx-download'></i> Download File
                                             </a>
                                             <a class="dropdown-item d-flex align-items-center" href="#">
@@ -128,16 +129,23 @@
                                         </div>
                                     </div>
                                     <div class="text-center file">
-                                        <img v-if="file.name.endsWith('.docx')" src="../../assets/images/file/doc.svg"
-                                            alt="file">
-                                        <img v-if="file.name.endsWith('.pdf')" src="../../assets/images/file/pdf.svg"
-                                            alt="file">
-                                        <img v-if="file.name.endsWith('.xsls')" src="../../assets/images/file/excel.svg"
-                                            alt="file">
+                                        <img v-if="file.filename.endsWith('.docx')"
+                                            src="../../assets/images/file/doc.svg" alt="file">
+                                        <img v-if="file.filename.endsWith('.pdf')"
+                                            src="../../assets/images/file/pdf.svg" alt="file">
+                                        <img v-if="file.filename.endsWith('.xsls')"
+                                            src="../../assets/images/file/excel.svg" alt="file">
                                     </div>
-                                    <h6>{{ file.name }}</h6>
-                                    <span class="mb"> {{ file.size }} </span>
+                                    <h6>
+                                        {{
+                                            file.filename.length > 20 ? file.filename.slice(0, 20) + '...' +
+                                                file.filename.slice(-4) : file.filename
+                                        }}
+                                    </h6>
+                                    <p>{{ file.timestamp }}</p>
+                                    <p>{{ file.file_size }} MB</p>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -147,52 +155,16 @@
     </div>
 </template>
 
-<script>
-import axios from 'axios';
-export default {
-    name: 'AllFiles',
-    data() {
-        return {
-            fileList: []
-        }
-    },
-    created() {
-        this.fetchData()
-    },
-    methods: {
-        fetchData() {
-            // Replace with your API endpoint
-            const apiEndpoint = 'api/ocr/list_files'
-            axios.get(apiEndpoint)
-                .then(response => {
-                    this.fileList = response.data.file_list
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        },
-        onClick() {
+<script setup>
+import { storeToRefs } from 'pinia';
 
-        }
-    },
-    sendData(data) {
-        axios({
-            url: 'https://api.farhanaulianda.tech/api/ocr/download_file/' + data,
-            method: 'GET',
-            responseType: 'blob',
-        }).then((response) => {
-            var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            var fileLink = document.createElement('a');
+import { useFilesStore } from '@/stores';
 
-            fileLink.href = fileURL;
-            fileLink.setAttribute('download', 'file.pdf');
-            document.body.appendChild(fileLink);
+const FilesStore = useFilesStore();
 
-            fileLink.click();
-        });
-    }
-
-}
+const { files } = storeToRefs(FilesStore);
+console.log(files)
+FilesStore.getAll();
 </script>
 
 <style lang="scss">
